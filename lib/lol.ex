@@ -15,12 +15,24 @@ defmodule Lol do
     plug Tesla.Middleware.JSON
 
     ## Examples
-
-        #iex> %{"freeChampionsIds" => [13, 23,]}
-
+    @doc """
+        iex> Lol.get_champion_rotations()
+        iex> [freeChampionIds: [13, 23, 29, 41, 50, 54, 58, 83, 84, 102, 103, 107, 110, 234,235, 412],
+        ...>  freeChampionIdsForNewPlayers: [222, 254, 427, 82, 131, 147, 54, 17, 18, 37],
+        ...>  maxNewPlayerLevel: 10]
+    """
     def get_champion_rotations() do
       case get("/lol/platform/v3/champion-rotations") do
         {:ok, %Tesla.Env{body: body}} -> atomize_keys(body)
+      end
+    end
+
+    def get_summoner_by(name) do
+      "/lol/summoner/v4/summoners/by-name/#{name}"
+      |> URI.encode()
+      |> get()
+      |> case do
+          {:ok, %Tesla.Env{body: body}} -> atomize_keys(body)
       end
     end
 end
